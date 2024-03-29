@@ -153,3 +153,42 @@ pub fn connect_network(network: Network) {
         .output()
         .expect("Unable to connect");
 }
+
+#[tauri::command]
+pub fn connect_network_password(network: Network, password: String) -> i32 {
+     let nmcli = Command::new("nmcli")
+        .arg("dev")
+        .arg("wifi")
+        .arg("connect")
+        .arg(network.bssid)
+        .arg("password")
+        .arg(password)
+        .output()
+        .expect("Unable to connect");
+
+    let code: i32 = match nmcli.status.code() {
+        Some(val) => val,
+        None => 0
+    };
+
+    return code;
+}
+
+
+#[tauri::command]
+pub fn is_existing_connection(ssid: String) -> bool { 
+    let nmcli = Command::new("nmcli")
+        .arg("connection")
+        .output()
+        .expect("Unable to view connections");
+
+    let output = String::from_utf8(nmcli.stdout).expect("disabled");
+    let lines: Vec<_> = output.split("\n").collect();
+    for line in lines {
+        if line.starts_with(&ssid) {
+            return true;
+        }
+    }
+
+    return false;
+}

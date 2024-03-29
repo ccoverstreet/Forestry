@@ -1,9 +1,13 @@
 <script>
+  	import NetworkPasswordPrompt from "./NetworkPasswordPrompt.svelte"
 	import { invoke } from "@tauri-apps/api/tauri"
   	import { onMount } from "svelte"
 
+
 	let wifiOn = false;
 	let networks = []
+	let promptHidden = true;
+	let selectedNetwork = {};
 
 	async function getNetworks() {
 		console.log("Getting networks...");
@@ -13,13 +17,22 @@
 			return;
 		}
 
+
 		networks = [];
 		networks = await invoke("get_networks", {});
 	}
 
 	async function connectNetwork(network) {
-		const res = await invoke("connect_network", {network})
-		getNetworks();
+		const ssid = network.ssid;
+		const isExistingConnection = await invoke("is_existing_connection", { ssid })
+		if (isExistingConnection) {
+			const res = await invoke("connect_network", {network})
+			getNetworks();
+		} else {
+			console.log("NEED TO PROVIDE PASSWORD");
+			promptHidden = false;
+			selectedNetwork = network;
+		}
 	}
 
 	async function enableWifi() {
@@ -57,6 +70,8 @@
 			<button on:click={enableWifi} style="background-color: var(--color-03); color: var(--color-01)">Enable</button>
 		{/if}
 	</div>
+
+	<NetworkPasswordPrompt refreshHandler={getNetworks} bind:hidden={promptHidden} bind:network={selectedNetwork}/>
 
 	<hr>
 
@@ -104,6 +119,7 @@
 
 <style>
 	#network-page {
+		position: relative;
 		padding: 1rem;
 		overflow: scroll;
 		height: calc(100vh - 2rem);

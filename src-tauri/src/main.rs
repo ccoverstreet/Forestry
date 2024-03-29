@@ -48,9 +48,11 @@ fn main() {
             default_colors,
             network::get_networks,
             network::connect_network,
+            network::connect_network_password,
             network::is_wifi_on,
             network::enable_wifi,
             network::disable_wifi,
+            network::is_existing_connection,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
