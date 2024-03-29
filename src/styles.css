@@ -4,13 +4,27 @@
   line-height: 24px;
   font-weight: 400;
 
-  color: #0f0f0f;
-  background-color: #f6f6f6;
+  color: var(--color-02);
+  background-color: var(--background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+
+
+button {
+	background-color: var(--background);
+	color: var(--foreground);
+	border-radius: 0.25rem;
+	border-width: 1px;
+	border-color: var(--color-08);
+	border-style: solid;
+	box-shadow: none;
+	outline: none;
+	padding: 0.5rem;
 }
 

@@ -1,6 +1,6 @@
 # Forestry
 
-A settings manager for Linux distributions for users using window managers and not full desktop environments. 
+A settings manager for Linux distributions for users using window managers and not full desktop environments. Forestry uses standard terminal colors (16 color specification) for styling, making it easy to match it's appearance to your own terminal configuration.
 
 ## Motivation
 
@@ -11,5 +11,12 @@ I found I really enjoyed using tiling window managers after experimenting with X
 
 I want this project to be as software agnostic as possible (ex. power-profiles vs tlp) and make it easier to change system settings on the fly rather than editing a config file or opening several other software programs.
 
+## Current Features
+
+### Network Controls
+
+- Ability to view and select networks
+    - Still need to enable password entry for secured networks
+    - Can currently use to connect and switch between known networks or unsecured networks
 
 

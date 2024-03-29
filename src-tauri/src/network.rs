@@ -103,14 +103,53 @@ pub async fn get_networks() -> Vec<Network> {
     return networks;
 }
 
+#[tauri::command]
+pub fn is_wifi_on() -> bool {
+    let nmcli = Command::new("nmcli")
+        .arg("radio")
+        .arg("wifi")
+        .output()
+        .expect("disabled");
+
+    let output = String::from_utf8(nmcli.stdout).expect("disabled");
+
+    println!("{}", output);
+
+    if output.starts_with("enabled") {
+        return true;
+    }
+
+    return false;
+}
 
 #[tauri::command]
-pub fn connect_network(bssid: String) {
-    let mut nmcli = Command::new("nmcli")
+pub fn enable_wifi() {
+    let nmcli = Command::new("nmcli")
+        .arg("radio")
+        .arg("wifi")
+        .arg("on")
+        .output()
+        .expect("Unable to enable Wifi");
+}
+
+#[tauri::command]
+pub fn disable_wifi() {
+    let nmcli = Command::new("nmcli")
+        .arg("radio")
+        .arg("wifi")
+        .arg("off")
+        .output()
+        .expect("Unable to disable Wifi");
+}
+
+
+#[tauri::command]
+pub fn connect_network(network: Network) {
+    let nmcli = Command::new("nmcli")
         .arg("dev")
         .arg("wifi")
         .arg("connect")
-        .arg(bssid)
+        .arg(network.bssid)
         .output()
         .expect("Unable to connect");
 }

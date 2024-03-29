@@ -2,21 +2,35 @@
 	import { invoke } from "@tauri-apps/api/tauri"
   	import { onMount } from "svelte"
 
+	let wifiOn = false;
 	let networks = []
 
 	async function getNetworks() {
 		console.log("Getting networks...");
-		networks = []
+		wifiOn = await invoke("is_wifi_on", {});
+		if (!wifiOn) {
+			networks = [];
+			return;
+		}
+
+		networks = [];
 		networks = await invoke("get_networks", {});
-		networks = networks.concat(networks);
 	}
 
-	async function connectNetwork(bssid) {
-		console.log(bssid);
-		const res = await invoke("connect_network", {bssid})
+	async function connectNetwork(network) {
+		const res = await invoke("connect_network", {network})
 		getNetworks();
 	}
 
+	async function enableWifi() {
+		const res = await invoke("enable_wifi", {})
+		getNetworks();
+	}
+
+	async function disableWifi() {
+		const res = await invoke("disable_wifi", {})
+		getNetworks();
+	}
 
 	onMount(() => {
 		getNetworks();
@@ -27,17 +41,33 @@
 </script>
 
 <div id="network-page">
-	NETWORK PAGE
+
+	<div id="wifi-header">
+		<div style="display: flex; align-items: center; font-weight: bold; font-size: 1.5rem;">
+			<div>Wi-Fi</div>
+		</div>
+
+		<div style="flex-grow: 1;"></div>
+
+		<button on:click={getNetworks} style="background-color: var(--color-08); color: var(--color-01)">Refresh</button>
+
+		{#if wifiOn}
+			<button on:click={disableWifi} style="background-color: var(--color-02)">Disable</button>
+		{:else}
+			<button on:click={enableWifi} style="background-color: var(--color-03); color: var(--color-01)">Enable</button>
+		{/if}
+	</div>
+
+	<hr>
 
 
-	<button on:click={getNetworks}>Get networks</button>
 
 	<div>
 		<div class="network-item">
 			<p class="network-ssid">SSID</p>
 			<p class="network-chan">Frequency</p>
 			<p class="network-signal">Signal</p>
-			<p class="network-bssd">BSSID</p>
+			<p class="network-bssid">BSSID</p>
 		</div>
 	</div>
 
@@ -46,25 +76,27 @@
 			<p>Retrieving network information...</p>
 		{:else}
 			{#each networks as net}
-				<div class="network-item {net.connected ? "network-active" : ""}"
-						on:click={connectNetwork(net.bssid)}>
-					<p class="network-ssid">{net.ssid}</p>
-					{#if net.chan >= 1 && net.chan <= 14}
-						<p class="network-chan">2.4GHz</p>
-					{:else}
-						<p class="network-chan">5.0Ghz</p>
-					{/if}
+				{#if net.ssid != "--"}
+					<div class="network-item {net.connected ? "network-active" : ""}"
+							on:click={connectNetwork(net)}>
+						<p class="network-ssid">{net.ssid}</p>
+						{#if net.chan >= 1 && net.chan <= 14}
+							<p class="network-chan">2.4GHz</p>
+						{:else}
+							<p class="network-chan">5.0Ghz</p>
+						{/if}
 
-					{#if net.signal > 75}
-						<p class="network-signal" style="color: green">{net.signal}</p>
-					{:else if net.signal > 50}
-						<p class="network-signal" style="color: yellow">{net.signal}</p>
-					{:else}
-						<p class="network-signal" style="color: red">{net.signal}</p>
-					{/if}
+						{#if net.signal > 75}
+							<p class="network-signal" style="color: var(--color-03)">{net.signal}</p>
+						{:else if net.signal > 50}
+							<p class="network-signal" style="color: var(--color-04)">{net.signal}</p>
+						{:else}
+							<p class="network-signal" style="color: var(--color-02)">{net.signal}</p>
+						{/if}
 
-					<p class="network-bssid">{net.bssid}</p>
-				</div>
+						<p class="network-bssid">{net.bssid}</p>
+					</div>
+				{/if}
 			{/each}
 		{/if}
 	</div>
@@ -81,10 +113,11 @@
 		display: flex;
 		padding: 0.25rem;
 		margin: 0;
+		width: 100%;
 	}
 
 	.network-item:hover {
-		background-color: #dddddd;
+		background-color: var(--color-01);
 	}
 
 	.network-item > p {
@@ -92,23 +125,31 @@
 	}
 
 	.network-active {
-		background-color: green;
+		color: var(--color-01);
+		background-color: var(--color-03);
 	}
 
 	.network-ssid {
-		width: 34ch;
+		min-width: 34ch;
 	}
 
 	.network-chan {
-		width: 10ch;
+		min-width: 10ch;
 	}
 
 	.network-signal {
-		width: 8ch;
+		min-width: 8ch;
 	}
 
 	.network-bssid {
-		width: 18ch;
+		min-width: 20ch;
 	}
+
+	#wifi-header {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+	}
+
 
 </style>
