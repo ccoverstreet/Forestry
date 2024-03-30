@@ -123,6 +123,7 @@
 		padding: 1rem;
 		overflow: scroll;
 		height: calc(100vh - 2rem);
+		max-width: 80ch;
 	}
 
 	.network-item {

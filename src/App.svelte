@@ -26,7 +26,8 @@
 
 <main class="container">
 	<div id="navpanel">
-  		<h1 style="padding: 1rem;border-bottom: 1px solid var(--color-08); margin: 0; padding: 2rem 1rem;">Forestry</h1>
+  		<h1 style="padding: 1rem;border-bottom: 1px solid var(--color-08); margin: 0; padding: 2rem 1rem;
+  		background-color: var(--color-01)">Forestry</h1>
 		<button class="page-button" on:click={() => {currentWindow = "HOME"}}>Home</button>
 		<button class="page-button" on:click={() => {currentWindow = "NETWORK"}}>Network</button>
 		<button class="page-button" on:click={() => {currentWindow = "POWER"}}>Power</button>
@@ -68,6 +69,7 @@
 		flex-direction: column;
 		padding: 0;
 		border-right: 1px solid var(--color-08);
+		background-color: var(--color-01);
 	}
 
 	.page-button {
