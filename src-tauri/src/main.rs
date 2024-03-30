@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod network;
+mod power;
 
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -53,6 +54,9 @@ fn main() {
             network::enable_wifi,
             network::disable_wifi,
             network::is_existing_connection,
+
+            power::get_power_profiles,
+            power::set_power_profile,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

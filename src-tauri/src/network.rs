@@ -16,12 +16,6 @@ pub struct Network {
 
 #[tauri::command]
 pub async fn get_networks() -> Vec<Network> {
-    //let mut nmcli = Command::new("nmcli")
-    //    .arg("dev")
-    //    .arg("cli")
-    //    .output()
-    //    .expect("Unable to get available networks");
-
     let mut nmcli = Command::new("nmcli")
         .arg("dev")
         .arg("wifi")

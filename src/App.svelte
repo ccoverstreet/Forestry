@@ -2,6 +2,7 @@
 	import { invoke }  from "@tauri-apps/api/tauri"
   	import Greet from './lib/Greet.svelte'
   	import NetworkPage from "./lib/NetworkPage.svelte"
+  	import PowerPage from "./lib/PowerPage.svelte"
 	import { onMount } from "svelte"
 
 
@@ -26,8 +27,9 @@
 <main class="container">
 	<div id="navpanel">
   		<h1 style="padding: 1rem;border-bottom: 1px solid var(--color-08); margin: 0; padding: 2rem 1rem;">Forestry</h1>
-		<button class="page-button" on:click={() => {currentWindow = "HOME"}}>HOME</button>
+		<button class="page-button" on:click={() => {currentWindow = "HOME"}}>Home</button>
 		<button class="page-button" on:click={() => {currentWindow = "NETWORK"}}>Network</button>
+		<button class="page-button" on:click={() => {currentWindow = "POWER"}}>Power</button>
 		<button class="page-button" on:click={async () => {console.log(await invoke("get_networks", {}))}}>Debug</button>
 	</div>
 
@@ -45,6 +47,8 @@
 
 		{:else if currentWindow == "NETWORK"}
 			<NetworkPage/>
+		{:else if currentWindow == "POWER"}
+			<PowerPage/>
   		{/if}
   	</div>
 </main>

@@ -134,6 +134,7 @@
 
 	.network-item:hover {
 		background-color: var(--color-01);
+		color: var(--foreground);
 	}
 
 	.network-item > p {
