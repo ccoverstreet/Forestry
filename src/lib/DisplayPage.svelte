@@ -154,22 +154,24 @@
 
 
 <div class="setting-page">
-	<svg id="svg-window" bind:this={svgElement} viewbox="-2000 -2000 6000 6000"style="width: 100%; eight: 100%;">
-		{#each displays as display, index}
-			<g style="cursor: move; pointer-events: bounding-box;" use:makeDraggable={makeDraggable} data-index={index}>
-				<rect x="{display.x}" y="{display.y}" width="{display.sizes[display.selected_size].width}" 
-		 	 							  height="{display.sizes[display.selected_size].height}" 
-		 	  															fill="{display.is_primary ? "var(--color-07)" : "var(--color-08)"}"
-		 	  		 stroke="black"
-					 stroke-width="10"
-		 	 							 							  on:click={() => { current_display = index; console.log(index) }}
-		 	 							 							  data-name={display.display_name}
-		 	 							 							  data-isprimary={display.is_primary}>
-		 		</rect>
-		 		<text x={display.x+50} y="{display.y + 200}" font-size="200px">{display.display_name}</text>
-		 	</g>
-		{/each}
-	</svg>
+	<div id="svg-container">
+		<svg id="svg-window" bind:this={svgElement} viewbox="-2000 -2000 6000 6000"style="width: 100%; height: 100%;">
+			{#each displays as display, index}
+				<g style="cursor: move; pointer-events: bounding-box;" use:makeDraggable={makeDraggable} data-index={index}>
+					<rect x="{display.x}" y="{display.y}" width="{display.sizes[display.selected_size].width}" 
+		 	 							  	  height="{display.sizes[display.selected_size].height}" 
+		 	  																fill="{display.is_primary ? "var(--color-07)" : "var(--color-08)"}"
+		 	  		 	 stroke="black"
+					 	 stroke-width="10"
+		 	 							 							  	  on:click={() => { current_display = index; console.log(index) }}
+		 	 							 							  	  data-name={display.display_name}
+		 	 							 							  	  data-isprimary={display.is_primary}>
+		 			</rect>
+		 			<text x={display.x+50} y="{display.y + 200}" font-size="200px">{display.display_name}</text>
+		 		</g>
+			{/each}
+		</svg>
+	</div>
 
 
 	<div id="controls" style="display: flex;">
@@ -188,12 +190,15 @@
 </div>
 
 <style>
+	#svg-container {
+		aspect-ratio: 4 / 2;
+		max-width: 80ch;
+		min-width: 20ch;
+		width: 100%;
+	}
+
 	#svg-window {
 		background-color: var(--color-01);
-		max-width: 80ch;
-		min-width: 40ch;
-		max-height: 60ch;
-		margin: 0.5rem;
 	}	
 	
 	#controls {
@@ -201,7 +206,4 @@
 		min-width: 40ch;
 		gap: 0.5rem;
 	}
-
-
-
 </style>
