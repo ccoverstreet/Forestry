@@ -15,15 +15,25 @@ pub struct Display {
     display_name: String,
     is_connected: bool,
     is_primary: bool,
-    x: u32,
-    y: u32,
+    x: i32,
+    y: i32,
     selected_size: usize,
     sizes: Vec<DisplaySize>,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct DisplayConfiguration {
+pub struct ScreenConfiguration {
+    name: String,
+    x: i32,
+    y: i32,
+    width: u32,
+    height: u32,
+}
 
+// Display Configuraiton object passed from frontend
+#[derive(Serialize, Deserialize)]
+pub struct DisplayConfigurationFrontend {
+    screens: Vec<ScreenConfiguration>
 }
 
 #[tauri::command]
@@ -116,10 +126,34 @@ pub fn get_display_configuration() -> Vec<Display> {
 
             println!("{:?}", dim_split);
 
-            display_x = dim_split[1].parse::<u32>().unwrap();
-            display_y = dim_split[2].parse::<u32>().unwrap();
+            display_x = dim_split[1].parse::<i32>().unwrap();
+            display_y = dim_split[2].parse::<i32>().unwrap();
         }
     }
 
     return displays;
+}
+
+#[tauri::command]
+pub fn set_display_configuration(config: DisplayConfigurationFrontend) {
+    let mut arg_string = "".to_string();
+    for screen in config.screens {
+        arg_string.push_str(&format!("--output {} --mode {}x{} --pos {}x{} --rotate normal ",
+                screen.name,
+                screen.width,
+                screen.height,
+                screen.x,
+                screen.y));
+    }
+
+    println!("{}", arg_string);
+
+    let args = arg_string.split_whitespace().collect::<Vec<_>>();
+
+    let mut nmcli = Command::new("xrandr")
+        .args(args)
+        .output()
+        .expect("Unable to get xrandr output");
+
+    println!("{:?}", nmcli);
 }

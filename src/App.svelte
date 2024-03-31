@@ -29,7 +29,6 @@
 		<button class="page-button" on:click={() => {currentWindow = "NETWORK"}}>Network</button>
 		<button class="page-button" on:click={() => {currentWindow = "POWER"}}>Power</button>
 		<button class="page-button" on:click={() => {currentWindow = "DISPLAY"}}>Display</button>
-		<button class="page-button" on:click={async () => {console.log(await invoke("get_networks", {}))}}>Debug</button>
 	</div>
 
 	<div style="flex-grow: 1;">

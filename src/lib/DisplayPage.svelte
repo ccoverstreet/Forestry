@@ -61,13 +61,29 @@
 		selectedElement = null;
 	}
 
-	function setDisplayConfiguration() {
+	async function setDisplayConfiguration() {
+		const displays = [];
 		for (const child of svgElement.children) {
 			const rect = child.children[0];
+			const name = rect.dataset.name;
+			const bbox = rect.getBBox();
 			console.log(rect.getBBox(), rect.dataset.name);
+			displays.push({
+				name: name,
+				x: Math.round(bbox.x),
+				y: Math.round(bbox.y),
+				width: bbox.width,
+				height: bbox.height
+			});
 		}
 
+		console.log(displays);
 
+		const res = await invoke("set_display_configuration", { config: {
+			screens: displays
+		}});
+
+		getDisplayConfiguration();
 	}
 
 	onMount(() => {
@@ -92,7 +108,7 @@
 	</svg>
 
 	<button on:click={getDisplayConfiguration}>TEST</button>
-	<button on:click={setDisplayConfiguration}></button>
+	<button on:click={setDisplayConfiguration}>Apply</button>
 
 	{#if current_display != null}
 		<div>

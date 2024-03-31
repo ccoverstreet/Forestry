@@ -60,6 +60,7 @@ fn main() {
             power::set_power_profile,
 
             display::get_display_configuration,
+            display::set_display_configuration,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
