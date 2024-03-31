@@ -124,8 +124,6 @@ pub fn get_display_configuration() -> Vec<Display> {
 
             let dim_split = cells[index_dim].split("+").collect::<Vec<_>>();
 
-            println!("{:?}", dim_split);
-
             display_x = dim_split[1].parse::<i32>().unwrap();
             display_y = dim_split[2].parse::<i32>().unwrap();
         }

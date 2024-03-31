@@ -6,10 +6,17 @@
 	let primary_display = null;
 	let current_display = null;
 
+	const delay = (delayInms) => {
+  		return new Promise(resolve => setTimeout(resolve, delayInms));
+	};
+
 	async function getDisplayConfiguration() {
 		const res = await invoke("get_display_configuration", {});
 		console.log(res);
 		displays = [];
+		
+		await delay(500);
+
 		displays = res;
 		for (const [i, conf] of Object.entries(res)) {
 			if (conf.is_primary) primary_display = i;
