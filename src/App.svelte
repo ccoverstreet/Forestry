@@ -3,6 +3,7 @@
   	import Greet from './lib/Greet.svelte'
   	import NetworkPage from "./lib/NetworkPage.svelte"
   	import PowerPage from "./lib/PowerPage.svelte"
+  	import DisplayPage from "./lib/DisplayPage.svelte"
 	import { onMount } from "svelte"
 
 
@@ -17,10 +18,6 @@
 	})
 
   	let currentWindow = "HOME";
-
-
-
-	
 </script>
 		
 
@@ -31,6 +28,7 @@
 		<button class="page-button" on:click={() => {currentWindow = "HOME"}}>Home</button>
 		<button class="page-button" on:click={() => {currentWindow = "NETWORK"}}>Network</button>
 		<button class="page-button" on:click={() => {currentWindow = "POWER"}}>Power</button>
+		<button class="page-button" on:click={() => {currentWindow = "DISPLAY"}}>Display</button>
 		<button class="page-button" on:click={async () => {console.log(await invoke("get_networks", {}))}}>Debug</button>
 	</div>
 
@@ -50,6 +48,8 @@
 			<NetworkPage/>
 		{:else if currentWindow == "POWER"}
 			<PowerPage/>
+		{:else if currentWindow == "DISPLAY"}
+			<DisplayPage/>
   		{/if}
   	</div>
 </main>
@@ -77,8 +77,8 @@
 		border-radius: 0;
 		border: 0px;
 		padding: 1rem 0rem;
-		border-bottom: 1px solid var(--color-08);
-		background-color: var(--background);
+		/*border-bottom: 1px solid var(--color-08);*/
+		background-color: var(--color-01);
 		color: var(--foreground);
 		font-weight: bold;
 		font-size: 1.25rem;

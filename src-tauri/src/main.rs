@@ -3,6 +3,7 @@
 
 mod network;
 mod power;
+mod display;
 
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -57,6 +58,8 @@ fn main() {
 
             power::get_power_profiles,
             power::set_power_profile,
+
+            display::get_display_configuration,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

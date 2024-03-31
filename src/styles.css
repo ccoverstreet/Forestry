@@ -28,3 +28,9 @@ button {
 	padding: 0.5rem;
 }
 
+.setting-page {
+	position: relative;
+	padding: 1rem;
+	overflow: scroll;
+	height: calc(100vh - 2rem);
+}
