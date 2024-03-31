@@ -18,6 +18,7 @@ I want this project to be as software agnostic as possible (ex. power-profiles v
 - Ability to view, select, and join networks (`nmcli` backend)
     - No support yet for .1x networks. These networks must be setup up manually (externally). Once known, Forestry can connect to the .1x network
 - Ability to select power profiles using `powerprofilesctl`
+- Ability to configure displays (frontend to `xrandr`)
 
 ![Network Page](./images/network-page.png)
 
