@@ -3,12 +3,17 @@
   	import { onMount } from "svelte"
 
 	let displays = [];
+	let primary_display = null;
 	let current_display = null;
 
 	async function getDisplayConfiguration() {
 		const res = await invoke("get_display_configuration", {});
 		console.log(res);
+		displays = [];
 		displays = res;
+		for (const [i, conf] of Object.entries(res)) {
+			if (conf.is_primary) primary_display = i;
+		}
 	}
 
 
@@ -58,6 +63,57 @@
 	}
 
 	function stopDrag(event) {
+		console.log("stopDrag handler");
+
+		// Snap windows next to each other
+
+		// This absolutely needs to be rewritten
+		// Find primary svg data then reloop for snap
+		// Super inefficient and should be restructured
+		let primary = null;
+		for (const child of svgElement.children) {
+			const rect = child.children[0];
+			if (rect.dataset.isprimary) {
+				primary = rect;
+				break;
+			}
+		}
+
+
+
+		for (const child of svgElement.children) {
+			const rect = child.children[0];
+			const text = child.children[1];
+			if (rect.dataset.isprimary === "true") continue;
+
+			const bbox_0 = primary.getBBox();
+			const bbox_1 = rect.getBBox();
+			console.log(rect.getBBox(), primary.getBBox());
+
+			if (bbox_1.x < bbox_0.x) {
+				rect.setAttribute("x", bbox_0.x - bbox_1.width);
+				text.setAttribute("x", bbox_0.x - bbox_1.width + 50);
+			} else if (bbox_1.x >= bbox_0.x && bbox_1.x < bbox_0.x + bbox_0.width) {
+				rect.setAttribute("x", bbox_0.x);
+				text.setAttribute("x", bbox_0.x + 50);
+			} else if (bbox_1.x >= bbox_0.x + bbox_0.width) {
+				rect.setAttribute("x", bbox_0.x + bbox_0.width);
+				text.setAttribute("x", bbox_0.x + bbox_1.width + 50);
+			}
+
+			if (bbox_1.y < bbox_0.y) {
+				rect.setAttribute("y", bbox_0.y - bbox_1.height);
+				text.setAttribute("y", bbox_0.y - bbox_1.height + 200);
+			} else if (bbox_1.y >= bbox_0.y && bbox_1.y < bbox_0.y + bbox_0.height) {
+				rect.setAttribute("y", bbox_0.y);
+				text.setAttribute("y", bbox_0.y + 200);
+			} else if (bbox_1.y >= bbox_0.y + bbox_0.height) {
+				rect.setAttribute("y", bbox_0.y + bbox_0.height);
+				text.setAttribute("y", bbox_0.y + bbox_0.height + 200);
+			}
+		}
+
+
 		selectedElement = null;
 	}
 
@@ -86,6 +142,10 @@
 		getDisplayConfiguration();
 	}
 
+	function saveDisplayConfiguration() {
+		console.log("TODO");
+	}
+
 	onMount(() => {
 		getDisplayConfiguration();
 	})
@@ -94,21 +154,30 @@
 
 
 <div class="setting-page">
-	<svg bind:this={svgElement} viewbox="-2000 -2000 6000 6000"style="width: 50%; height: 50%;">
+	<svg id="svg-window" bind:this={svgElement} viewbox="-2000 -2000 6000 6000"style="width: 100%; eight: 100%;">
 		{#each displays as display, index}
 			<g style="cursor: move; pointer-events: bounding-box;" use:makeDraggable={makeDraggable} data-index={index}>
 				<rect x="{display.x}" y="{display.y}" width="{display.sizes[display.selected_size].width}" 
-		 	 							 	 height="{display.sizes[display.selected_size].height}" fill="red"
+		 	 							  height="{display.sizes[display.selected_size].height}" 
+		 	  															fill="{display.is_primary ? "var(--color-07)" : "var(--color-08)"}"
+		 	  		 stroke="black"
+					 stroke-width="10"
 		 	 							 							  on:click={() => { current_display = index; console.log(index) }}
-		 	 							 							  data-name={display.display_name}>
+		 	 							 							  data-name={display.display_name}
+		 	 							 							  data-isprimary={display.is_primary}>
 		 		</rect>
 		 		<text x={display.x+50} y="{display.y + 200}" font-size="200px">{display.display_name}</text>
 		 	</g>
 		{/each}
 	</svg>
 
-	<button on:click={getDisplayConfiguration}>TEST</button>
-	<button on:click={setDisplayConfiguration}>Apply</button>
+
+	<div id="controls" style="display: flex;">
+		<div style="flex-grow: 1;"></div>
+		<button on:click={getDisplayConfiguration}>TEST</button>
+		<button on:click={setDisplayConfiguration}>Apply</button>
+		<button on:click={saveDisplayConfiguration}>Save</button>
+	</div>
 
 	{#if current_display != null}
 		<div>
@@ -118,4 +187,21 @@
 
 </div>
 
+<style>
+	#svg-window {
+		background-color: var(--color-01);
+		max-width: 80ch;
+		min-width: 40ch;
+		max-height: 60ch;
+		margin: 0.5rem;
+	}	
+	
+	#controls {
+		max-width: 80ch;
+		min-width: 40ch;
+		gap: 0.5rem;
+	}
 
+
+
+</style>

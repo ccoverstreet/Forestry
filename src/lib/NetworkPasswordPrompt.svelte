@@ -25,7 +25,7 @@
 
 {#if !hidden}
 	<div id="mask" on:click={() => {hidden = true}}>
-		<div id="container" on:click={(event) => { event.stopPropagation() }}>
+		<div id="prompt-container" on:click={(event) => { event.stopPropagation() }}>
 			<div>Enter password for <span style="font-weight: bold;">{network.ssid}</span></div>
 			<form on:submit={connectNetworkPassword}>
 				<input bind:value={password}/>
@@ -49,7 +49,7 @@
 		z-index: 100;
 		background-color: rgba(0, 0, 0, 0.5);
 	}
-	#container {
+	#prompt-container {
 		position: absolute;
 		width: 30ch;
 		top: calc(100vh / 2 - 1rem);

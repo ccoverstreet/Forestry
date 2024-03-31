@@ -28,7 +28,9 @@ button {
 	padding: 0.5rem;
 }
 
-.setting-page {
+.setting-page { 
+	display: flex;
+	flex-direction: column;
 	position: relative;
 	padding: 1rem;
 	overflow: scroll;

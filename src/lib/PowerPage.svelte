@@ -44,6 +44,7 @@
 
 <style>
 	#container {
+		display: block;
 		max-width: 40ch;
 		position: relative;
 		padding: 1rem;
@@ -52,7 +53,7 @@
 	}
 
 	.power-profile {
-		display: flex;
+		display: flex; 
 		padding: 0.25rem;
 		margin: 0;
 		width: 100%;
