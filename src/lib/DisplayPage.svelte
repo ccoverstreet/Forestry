@@ -97,24 +97,31 @@
 			const bbox_1 = rect.getBBox();
 			console.log(rect.getBBox(), primary.getBBox());
 
-			if (bbox_1.x < bbox_0.x) {
-				rect.setAttribute("x", bbox_0.x - bbox_1.width);
-				text.setAttribute("x", bbox_0.x - bbox_1.width + 50);
-			} else if (bbox_1.x >= bbox_0.x && bbox_1.x < bbox_0.x + bbox_0.width) {
-				rect.setAttribute("x", bbox_0.x);
-				text.setAttribute("x", bbox_0.x + 50);
-			} else if (bbox_1.x >= bbox_0.x + bbox_0.width) {
-				rect.setAttribute("x", bbox_0.x + bbox_0.width);
-				text.setAttribute("x", bbox_0.x + bbox_1.width + 50);
+			const center = {
+				x: bbox_1.width / 2 + bbox_1.x,
+				y: bbox_1.height / 2 + bbox_1.y,
+				width: bbox_1.width,
+				height: bbox_1.height,
 			}
 
-			if (bbox_1.y < bbox_0.y) {
-				rect.setAttribute("y", bbox_0.y - bbox_1.height);
-				text.setAttribute("y", bbox_0.y - bbox_1.height + 200);
-			} else if (bbox_1.y >= bbox_0.y && bbox_1.y < bbox_0.y + bbox_0.height) {
+			if (center.x < bbox_0.x) {
+				rect.setAttribute("x", bbox_0.x - center.width);
+				text.setAttribute("x", bbox_0.x - center.width + 50);
+			} else if (center.x >= bbox_0.x && bbox_1.x < bbox_0.x + bbox_0.width) {
+				rect.setAttribute("x", bbox_0.x);
+				text.setAttribute("x", bbox_0.x + 50);
+			} else if (center.x >= bbox_0.x + bbox_0.width) {
+				rect.setAttribute("x", bbox_0.x + bbox_0.width);
+				text.setAttribute("x", bbox_0.x + center.width + 50);
+			}
+
+			if (center.y < bbox_0.y) {
+				rect.setAttribute("y", bbox_0.y - center.height);
+				text.setAttribute("y", bbox_0.y - center.height + 200);
+			} else if (center.y >= bbox_0.y && bbox_1.y < bbox_0.y + bbox_0.height) {
 				rect.setAttribute("y", bbox_0.y);
 				text.setAttribute("y", bbox_0.y + 200);
-			} else if (bbox_1.y >= bbox_0.y + bbox_0.height) {
+			} else if (center.y >= bbox_0.y + bbox_0.height) {
 				rect.setAttribute("y", bbox_0.y + bbox_0.height);
 				text.setAttribute("y", bbox_0.y + bbox_0.height + 200);
 			}
