@@ -15,7 +15,6 @@
 		console.log(res);
 		displays = [];
 		
-		await delay(500);
 
 		displays = res;
 		for (const [i, conf] of Object.entries(res)) {
@@ -152,6 +151,9 @@
 		const res = await invoke("set_display_configuration", { config: {
 			screens: displays
 		}});
+
+
+		await delay(500);
 
 		getDisplayConfiguration();
 	}
