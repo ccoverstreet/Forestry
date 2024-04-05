@@ -54,6 +54,7 @@ pub fn get_display_configuration() -> Vec<Display> {
     let mut display_y = 0;
 
     let mut selected_index = 0;
+    let mut size_index = 0;
     let mut display_sizes: Vec<DisplaySize> = vec![];
     
     for line in lines {
@@ -65,9 +66,11 @@ pub fn get_display_configuration() -> Vec<Display> {
         if trimmed.chars().nth(0).unwrap().is_numeric() {
             // This line is a display size option
     
-            if trimmed.contains("*") { selected_index = 0 }
+            if trimmed.contains("*")  || trimmed.contains("+") { selected_index = size_index }
 
-            let cells: Vec<_> = trimmed.split_whitespace().collect();
+            let trimmed_cleaned = trimmed.replace(&['+', '*'][..], "");
+
+            let cells: Vec<_> = trimmed_cleaned.split_whitespace().collect();
 
             let size_name = cells[0];
             let clean_name = size_name.replace("i", "");
@@ -78,8 +81,9 @@ pub fn get_display_configuration() -> Vec<Display> {
 
             let mut rates: Vec<f32> = vec![];
             for c in &cells[1..] {
-                let clean_cell = c.replace("*+", "");
-                rates.push(clean_cell.parse::<f32>().unwrap());
+                println!("{}", c);
+
+                rates.push(c.parse::<f32>().unwrap());
             }
 
             display_sizes.push(DisplaySize{
@@ -88,6 +92,8 @@ pub fn get_display_configuration() -> Vec<Display> {
                 height: height,
                 refresh_rates: rates,                
             });
+
+            size_index += 1;
         } else {
             if display_sizes.len() > 0 {
                 // Push existing data to display and reset
@@ -102,6 +108,7 @@ pub fn get_display_configuration() -> Vec<Display> {
                 });
 
 
+                size_index = 0;
                 display_name = "PLACE";
                 selected_index = 0;
                 display_is_primary = false;
@@ -154,4 +161,15 @@ pub fn set_display_configuration(config: DisplayConfigurationFrontend) {
         .expect("Unable to get xrandr output");
 
     println!("{:?}", nmcli);
+}
+
+#[tauri::command]
+pub fn set_display_mode(display_name: String, mode_name: String) {
+    let mut nmcli = Command::new("xrandr")
+        .arg("--output")
+        .arg(display_name)
+        .arg("--mode")
+        .arg(mode_name)
+        .output()
+        .expect("Unable to get xrandr output");
 }

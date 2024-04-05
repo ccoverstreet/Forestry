@@ -1,10 +1,11 @@
 <script>
 	import { invoke } from "@tauri-apps/api/tauri"
   	import { onMount } from "svelte"
+  	import DisplayInfo from "./DisplayInfo.svelte"
 
 	let displays = [];
-	let primary_display = null;
-	let current_display = null;
+	let primaryDisplay = null;
+	let currentDisplay = null;
 
 	const delay = (delayInms) => {
   		return new Promise(resolve => setTimeout(resolve, delayInms));
@@ -18,7 +19,7 @@
 
 		displays = res;
 		for (const [i, conf] of Object.entries(res)) {
-			if (conf.is_primary) primary_display = i;
+			if (conf.is_primary) primaryDisplay = i;
 		}
 	}
 
@@ -170,45 +171,45 @@
 
 
 <div class="setting-page">
-	<div id="svg-container">
-		<svg id="svg-window" bind:this={svgElement} viewbox="-2000 -2000 6000 6000"style="width: 100%; height: 100%;">
-			{#each displays as display, index}
-				<g style="cursor: move; pointer-events: bounding-box;" use:makeDraggable={makeDraggable} data-index={index}>
-					<rect x="{display.x}" y="{display.y}" width="{display.sizes[display.selected_size].width}" 
-		 	 							  	  height="{display.sizes[display.selected_size].height}" 
-		 	  																fill="{display.is_primary ? "var(--color-07)" : "var(--color-08)"}"
-		 	  		 	 stroke="black"
-					 	 stroke-width="10"
-		 	 							 							  	  on:click={() => { current_display = index; console.log(index) }}
-		 	 							 							  	  data-name={display.display_name}
-		 	 							 							  	  data-isprimary={display.is_primary}>
-		 			</rect>
-		 			<text x={display.x+50} y="{display.y + 200}" font-size="200px">{display.display_name}</text>
-		 		</g>
-			{/each}
-		</svg>
-	</div>
-
-
-	<div id="controls" style="display: flex;">
-		<div style="flex-grow: 1;"></div>
-		<button on:click={getDisplayConfiguration}>TEST</button>
-		<button on:click={setDisplayConfiguration}>Apply</button>
-		<button on:click={saveDisplayConfiguration}>Save</button>
-	</div>
-
-	{#if current_display != null}
-		<div>
-			{JSON.stringify(displays[current_display])}
+	<div style="max-width: 100ch;" class="setting-page-content">
+		<div id="svg-container">
+			<svg id="svg-window" bind:this={svgElement} viewbox="-2000 -2000 6000 6000"style="width: 100%; height: 100%;">
+				{#each displays as display, index}
+					<g style="cursor: move; pointer-events: bounding-box;" use:makeDraggable={makeDraggable} data-index={index}>
+						<rect x="{display.x}" y="{display.y}" width="{display.sizes[display.selected_size].width}" 
+		 	 							  	  	  height="{display.sizes[display.selected_size].height}" 
+		 	  																	fill="{display.is_primary ? "var(--color-07)" : "var(--color-08)"}"
+		 	  		 	 	 stroke="black"
+					 	 	 stroke-width="10"
+		 	 							 							  	  	  on:click={() => { currentDisplay = index; console.log(index) }}
+		 	 							 							  	  	  data-name={display.display_name}
+		 	 							 							  	  	  data-isprimary={display.is_primary}>
+		 				</rect>
+		 				<text x={display.x+50} y="{display.y + 200}" font-size="200px">{display.display_name}</text>
+		 			</g>
+				{/each}
+			</svg>
 		</div>
-	{/if}
 
+
+		<div id="controls" style="display: flex;">
+			<div style="flex-grow: 1;"></div>
+			<button on:click={getDisplayConfiguration}>TEST</button>
+			<button on:click={setDisplayConfiguration}>Apply</button>
+			<button on:click={saveDisplayConfiguration}>Save</button>
+		</div>
+
+		{#if currentDisplay != null}
+			<DisplayInfo displayInfo={displays[currentDisplay]} displayUpdateHandler={getDisplayConfiguration}/>
+		{/if}
+
+	</div>
 </div>
 
 <style>
 	#svg-container {
 		aspect-ratio: 4 / 2;
-		max-width: 80ch;
+		max-width: 300ch;
 		min-width: 20ch;
 		width: 100%;
 	}

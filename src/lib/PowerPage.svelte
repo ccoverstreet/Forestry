@@ -19,27 +19,29 @@
 	}) 
 </script>
 
-<div id="container">
-	<div style="display: flex; align-items: center; font-weight: bold; font-size: 1.5rem;">
-		<div>Power Profile</div>
-	</div>
-
-	<hr>
-
-	<div class="power-profile">
-		<div class="power-profile-name">Profile Name</div>
-		<div class="power-profile-driver">Driver</div>
-	</div>
-
-	<hr>
-
-	{#each profiles as profile}
-		<div class="power-profile {profile.is_active ? "power-profile-active" : "h"}" 
-			on:click={setPowerProfile(profile)}>
-			<div class="power-profile-name">{profile.name}</div>
-			<div class="power-profile-driver">{profile.driver}</div>
+<div class="setting-page">
+	<div id="container" class="setting-page-content">
+		<div style="display: flex; align-items: center; font-weight: bold; font-size: 1.5rem;">
+			<div>Power Profile</div>
 		</div>
-	{/each}
+
+		<hr>
+
+		<div class="power-profile">
+			<div class="power-profile-name">Profile Name</div>
+			<div class="power-profile-driver">Driver</div>
+		</div>
+
+		<hr>
+
+		{#each profiles as profile}
+			<div class="power-profile {profile.is_active ? "power-profile-active" : "h"}" 
+				on:click={setPowerProfile(profile)}>
+				<div class="power-profile-name">{profile.name}</div>
+				<div class="power-profile-driver">{profile.driver}</div>
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
@@ -49,7 +51,6 @@
 		position: relative;
 		padding: 1rem;
 		overflow: scroll;
-		height: calc(100vh - 2rem);
 	}
 
 	.power-profile {

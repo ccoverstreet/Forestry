@@ -61,6 +61,7 @@ fn main() {
 
             display::get_display_configuration,
             display::set_display_configuration,
+            display::set_display_mode,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

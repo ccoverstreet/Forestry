@@ -53,78 +53,72 @@
 
 </script>
 
-<div id="network-page">
+<div id="network-page" class="setting-page">
+	<div class="setting-page-content">
+		<div id="wifi-header">
+			<div style="display: flex; align-items: center; font-weight: bold; font-size: 1.5rem;">
+				<div>Wi-Fi</div>
+			</div>
 
-	<div id="wifi-header">
-		<div style="display: flex; align-items: center; font-weight: bold; font-size: 1.5rem;">
-			<div>Wi-Fi</div>
+			<div style="flex-grow: 1;"></div>
+
+			<button on:click={getNetworks} style="background-color: var(--color-08); color: var(--color-01)">Refresh</button>
+
+			{#if wifiOn}
+				<button on:click={disableWifi} style="background-color: var(--color-02)">Disable</button>
+			{:else}
+				<button on:click={enableWifi} style="background-color: var(--color-03); color: var(--color-01)">Enable</button>
+			{/if}
 		</div>
 
-		<div style="flex-grow: 1;"></div>
+		<NetworkPasswordPrompt refreshHandler={getNetworks} bind:hidden={promptHidden} bind:network={selectedNetwork}/>
 
-		<button on:click={getNetworks} style="background-color: var(--color-08); color: var(--color-01)">Refresh</button>
-
-		{#if wifiOn}
-			<button on:click={disableWifi} style="background-color: var(--color-02)">Disable</button>
-		{:else}
-			<button on:click={enableWifi} style="background-color: var(--color-03); color: var(--color-01)">Enable</button>
-		{/if}
-	</div>
-
-	<NetworkPasswordPrompt refreshHandler={getNetworks} bind:hidden={promptHidden} bind:network={selectedNetwork}/>
-
-	<hr>
+		<hr>
 
 
 
-	<div>
-		<div class="network-item">
-			<p class="network-ssid">SSID</p>
-			<p class="network-chan">Frequency</p>
-			<p class="network-signal">Signal</p>
-			<p class="network-bssid">BSSID</p>
+		<div>
+			<div class="network-item">
+				<p class="network-ssid">SSID</p>
+				<p class="network-chan">Frequency</p>
+				<p class="network-signal">Signal</p>
+				<p class="network-bssid">BSSID</p>
+			</div>
 		</div>
-	</div>
 
-	<div class="network-list">
-		{#if networks.length == 0}
-			<p>Retrieving network information...</p>
-		{:else}
-			{#each networks as net}
-				{#if net.ssid != "--"}
-					<div class="network-item {net.connected ? "network-active" : ""}"
-							on:click={connectNetwork(net)}>
-						<p class="network-ssid">{net.ssid}</p>
-						{#if net.chan >= 1 && net.chan <= 14}
-							<p class="network-chan">2.4GHz</p>
-						{:else}
-							<p class="network-chan">5.0Ghz</p>
-						{/if}
+		<div class="network-list">
+			{#if networks.length == 0}
+				<p>Retrieving network information...</p>
+			{:else}
+				{#each networks as net}
+					{#if net.ssid != "--"}
+						<div class="network-item {net.connected ? "network-active" : ""}"
+								on:click={connectNetwork(net)}>
+							<p class="network-ssid">{net.ssid}</p>
+							{#if net.chan >= 1 && net.chan <= 14}
+								<p class="network-chan">2.4GHz</p>
+							{:else}
+								<p class="network-chan">5.0Ghz</p>
+							{/if}
 
-						{#if net.signal > 75}
-							<p class="network-signal" style="color: var(--color-03)">{net.signal}</p>
-						{:else if net.signal > 50}
-							<p class="network-signal" style="color: var(--color-04)">{net.signal}</p>
-						{:else}
-							<p class="network-signal" style="color: var(--color-02)">{net.signal}</p>
-						{/if}
+							{#if net.signal > 75}
+								<p class="network-signal" style="color: var(--color-03)">{net.signal}</p>
+							{:else if net.signal > 50}
+								<p class="network-signal" style="color: var(--color-04)">{net.signal}</p>
+							{:else}
+								<p class="network-signal" style="color: var(--color-02)">{net.signal}</p>
+							{/if}
 
-						<p class="network-bssid">{net.bssid}</p>
-					</div>
-				{/if}
-			{/each}
-		{/if}
+							<p class="network-bssid">{net.bssid}</p>
+						</div>
+					{/if}
+				{/each}
+			{/if}
+		</div>
 	</div>
 </div>
 
 <style>
-	#network-page {
-		position: relative;
-		padding: 1rem;
-		overflow: scroll;
-		height: calc(100vh - 2rem);
-		max-width: 80ch;
-	}
 
 	.network-item {
 		display: flex;
